@@ -1,0 +1,50 @@
+﻿html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: system-ui;
+	/*background-color: rgb(20, 20, 20);*/
+
+	overflow: auto;
+	margin: 8px;
+	padding: 0;
+}
+
+h1, h2 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.gameReportContainer {
+	background-color: #412b69;
+	width: calc(100% - 16px);
+	color: white;
+	border: 1px solid black;
+	padding: 5px;
+}
+
+.expandableSection {
+}
+
+.expandableSectionHeader {
+	cursor: pointer;
+}
+
+/*.expandableSectionHeader:hover {
+				text-decoration: underline;
+				}*/
+
+.expandableSectionHeader:before {
+	content: "+ ";
+	font-family: monospace;
+}
+
+.expandableSectionHeader.active:before {
+	content: "- ";
+}
+
+
+.expandableSectionContent:not(.active) {
+	display: none;
+}
