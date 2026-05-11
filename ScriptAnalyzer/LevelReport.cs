@@ -1,5 +1,6 @@
 ﻿#define CATHODE_FAIL_HARD
 
+using CATHODE;
 using CATHODE.Scripting;
 using CathodeLib;
 using System;
@@ -19,7 +20,7 @@ namespace ScriptAnalyzer
 			return (from link in entity.childLinks
 					select new XElement("OutLink",
 						new XAttribute("SourceParam", link.thisParamID),
-						new XAttribute("TargetID", link.linkedEntityID),
+						new XAttribute("TargetID", link.linkedEntityID.ToByteString()),
 						new XAttribute("TargetName", commands.Utils.GetEntityName(entry.shortGUID, link.linkedEntityID)),
 						new XAttribute("TargetParam", link.linkedParamID)
 						)).Concat(
@@ -29,7 +30,7 @@ namespace ScriptAnalyzer
 					select new XElement("InLink",
 						new XAttribute("SourceParam", entityLink.thisParamID),
 						new XAttribute("SourceName", commands.Utils.GetEntityName(entry.shortGUID, entryEntity.shortGUID)),
-						new XAttribute("SourceID", entryEntity.shortGUID),
+						new XAttribute("SourceID", entryEntity.shortGUID.ToByteString()),
 						new XAttribute("TargetParam", entityLink.linkedParamID)
 						)).Concat(
 					from option in entity.parameters
@@ -52,7 +53,7 @@ namespace ScriptAnalyzer
 		{
 			//CATHODE.Scripting.EntityVariant.
 
-			Console.WriteLine($"Processing composite {entry.name} ({entry.shortGUID})");
+			Console.WriteLine($"Processing composite {entry.name} ({entry.shortGUID.ToByteString()})");
 
 			return new XElement("Composite",
 				new XAttribute("Name", entry.name),
@@ -64,14 +65,14 @@ namespace ScriptAnalyzer
 				orderby commands.Utils.GetEntityName(entry, function)
 				select commands.GetComposite(function.function) == null ? new XElement("Function",
 					new XAttribute("Name", commands.Utils.GetEntityName(entry, function)),
-					new XAttribute("GUID", function.shortGUID.ToString()),
+					new XAttribute("GUID", function.shortGUID.ToByteString()),
 					new XAttribute("Type", function.function.ToString()),
 					GetCommandEntryLinks(commands, entry, function)
 				) : new XElement("Instance",
 					new XAttribute("Name", commands.Utils.GetEntityName(entry, function)),
-					new XAttribute("GUID", function.shortGUID.ToString()),
+					new XAttribute("GUID", function.shortGUID.ToByteString()),
 					new XAttribute("CompositeName", commands.GetComposite(function.function).name),
-					new XAttribute("CompositeGUID", function.function.ToString()),
+					new XAttribute("CompositeGUID", function.function.ToByteString()),
 					GetCommandEntryLinks(commands, entry, function)
 				),
 
@@ -103,51 +104,36 @@ namespace ScriptAnalyzer
 				//new XAttribute("Description", entry.Description ?? "No description available"));
 		}
 
-		private static XElement GetLevelScriptingReport(string levelPath)
+		private static XElement GetLevelScriptingReport(LevelContext levelContext)
 		{
 			XElement result;
-			
-			{
-				bool is64Bit = Path.Exists(Path.Combine(levelPath, "COMMANDS.BIN"));
-				CATHODE.Commands commands;
 
-				if (!is64Bit)
-				{
-					commands = new(Path.Combine(levelPath, "WORLD/COMMANDS.PAK"));
-				}
-				else
-				{
-					commands = new(Path.Combine(levelPath, "WORLD/COMMANDS.BIN"));
-				}
+			levelContext.CommandsTask.Wait();
 
-				//CommandsUtils.LinkCommands(commands);
+			var commands = levelContext.CommandsTask.Result;
 
-				result = new XElement("Scripting",
-					from entrypoint in commands.EntryPoints
-					orderby entrypoint.name
-					select new XElement("Entrypoint", new XAttribute("Name", entrypoint.name), entrypoint.shortGUID),
+			result = new XElement("Scripting",
+				from entrypoint in commands.EntryPoints
+				orderby entrypoint.name
+				select new XElement("Entrypoint", new XAttribute("Name", entrypoint.name), entrypoint.shortGUID.ToByteString()),
 
-					from commandEntry in commands.Entries
-					orderby commandEntry.name
-					select GetCommandEntryXElement(commands, commandEntry)
-					);
-			}
-
-			// immediate GC to make sure that the commands object is disposed of.
-			GC.Collect();
+				from commandEntry in commands.Entries
+				orderby commandEntry.name
+				select GetCommandEntryXElement(commands, commandEntry)
+				);
 
 			return result;
 			//commands.Entries;
 		}
 
-		public static XElement GetLevelReport(string levelPath)
+		public static XElement GetLevelReport(GameRootContext gameRootContext, string levelPath)
 		{
 			Console.WriteLine($"Processing level {levelPath}...");
 
 #pragma warning disable CS8604 // Possible null reference argument.
 			return new XElement("LevelReport",
 				new XAttribute("LevelName", Path.GetFileNameWithoutExtension(levelPath)),
-				GetLevelScriptingReport(levelPath)
+				GetLevelScriptingReport(new LevelContext(gameRootContext, levelPath))
 			);
 #pragma warning restore CS8604 // Possible null reference argument.
 		}
