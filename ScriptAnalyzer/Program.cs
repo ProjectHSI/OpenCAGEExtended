@@ -79,7 +79,7 @@ namespace ScriptAnalyzer
 				}
 			}
 
-			if (!generateLevelReports || !generateGameReports || !generateEverything)
+			if (!generateLevelReports && !generateGameReports && !generateEverything)
 			{
 				// Assume all three
 				generateEverything = true;
