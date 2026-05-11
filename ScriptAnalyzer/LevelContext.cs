@@ -31,7 +31,7 @@ namespace ScriptAnalyzer
 		{
 			// TODO: Handle patching here.
 
-			this.gameRootContext = gameRootContext;
+			/*this.gameRootContext = gameRootContext;
 			TexturesTask = Task.Run(() => new Textures(Path.Combine(levelPath, "RENDERABLE/LEVEL_TEXTURES.ALL.PAK")));
 			ShadersTask = Task.Run(() => new Shaders(Path.Combine(levelPath, "RENDERABLE/LEVEL_SHADERS_DX11.PAK")));
 			MaterialsTask = Task.Run(async () => new Materials(Path.Combine(levelPath, "RENDERABLE/LEVEL_MODELS.MTL"), await gameRootContext.TexturesTask, await TexturesTask, await ShadersTask));
@@ -46,7 +46,7 @@ namespace ScriptAnalyzer
 
 			CollisionMapsTask = Task.Run(async () => new CollisionMaps(Path.Combine(levelPath, "WORLD/COLLISION.MAP"), await MaterialsTask, await MaterialMappingsTask));
 
-			EnvironmentAnimationsTask = Task.Run(async () => new EnvironmentAnimations(Path.Combine(levelPath, "WORLD/ENVIRONMENTMAP.BIN"), await gameRootContext.AnimationStringsDebugTask));
+			EnvironmentAnimationsTask = Task.Run(async () => new EnvironmentAnimations(Path.Combine(levelPath, "WORLD/ENVIRONMENTMAP.BIN"), await gameRootContext.AnimationStringsDebugTask));*/
 
 			// And finally...
 			CommandsTask = Task.Run(async () =>
