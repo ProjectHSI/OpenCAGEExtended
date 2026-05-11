@@ -74,12 +74,12 @@ namespace ScriptAnalyzer
 
 		~LevelContext()
 		{
-			MaterialsTask.Result.ClearReferences();
+			/*MaterialsTask.Result.ClearReferences();
 			CollisionMapsTask.Result.ClearReferences();
 			ModelsTask.Result.ClearReferences();
 			RenderableElementsTask.Result.ClearReferences();
 			CollisionMapsTask.Result.ClearReferences();
-			EnvironmentAnimationsTask.Result.ClearReferences();
+			EnvironmentAnimationsTask.Result.ClearReferences();*/
 			CommandsTask.Result.ClearReferences();
 		}
 	}
