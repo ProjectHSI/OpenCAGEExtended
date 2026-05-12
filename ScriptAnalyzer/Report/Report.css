@@ -24,6 +24,19 @@ h1, h2 {
 	padding: 5px;
 }
 
+ul {
+	margin-block: 0;
+}
+
+li {
+	list-style-position: inside;
+}
+
+li:has(.expandableSection) {
+	list-style-position: outside;
+	list-style: none;
+}
+
 .expandableSection {
 }
 
@@ -31,18 +44,14 @@ h1, h2 {
 	cursor: pointer;
 }
 
-/*.expandableSectionHeader:hover {
-				text-decoration: underline;
-				}*/
+	.expandableSectionHeader:before {
+		content: "+ ";
+		font-family: monospace;
+	}
 
-.expandableSectionHeader:before {
-	content: "+ ";
-	font-family: monospace;
-}
-
-.expandableSectionHeader.active:before {
-	content: "- ";
-}
+	.expandableSectionHeader.active:before {
+		content: "- ";
+	}
 
 
 .expandableSectionContent:not(.active) {

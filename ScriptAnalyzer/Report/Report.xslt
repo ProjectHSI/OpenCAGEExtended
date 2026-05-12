@@ -52,8 +52,8 @@
 
 	<xsl:template mode="scripting" match="Entrypoint">
 		<li>
-			<span style="color: orange; margin-right: 0.9em;                    ">Entrypoint</span>
-			<span style="               margin-right: 0.2em; margin-left: 0.9em;">
+			<span style="color: orange; margin-right: 0.5em;                    ">Entrypoint</span>
+			<span style="               margin-right: 0.2em; margin-left: 0.5em;">
 				<xsl:value-of select="@Name" />
 			</span>
 			<span style="color: grey;   margin-left: 0.2em;                     ">

@@ -27,6 +27,22 @@ Array.from(document.getElementsByClassName('expandableSection')).forEach(section
 	});
 });
 
+function expandAll() {
+	Array.from(document.getElementsByClassName('expandableSection')).forEach(section => {
+		if (!section.classList.contains('active')) {
+			toggleExpandableSection(section);
+		}
+	});
+}
+
+function collapseAll() {
+	Array.from(document.getElementsByClassName('expandableSection')).forEach(section => {
+		if (section.classList.contains('active')) {
+			toggleExpandableSection(section);
+		}
+	});
+}
+
 function openHash() {
 	const hash = window.location.hash.substring(1); //remove preceeding '#'
 

@@ -20,6 +20,9 @@
 						<xsl:apply-templates mode="game" />
 					</div>
 				</div>
+				<a href="" style="margin-right:0.5em" onclick="expandAll()">Expand All</a>
+				<a href="" style="margin-left:0.5em" onclick="collapseAll()">Collapse All</a>
+				<br/>
 				<span>
 					<i>
 						Not an official tool of OpenCAGE.<br />
