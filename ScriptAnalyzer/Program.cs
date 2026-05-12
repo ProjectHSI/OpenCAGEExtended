@@ -38,6 +38,7 @@ namespace ScriptAnalyzer
 							Console.WriteLine("                      Use on systems where memory is not a constraint.");
 							Console.WriteLine("  --parallel:game:N   Enables parallel processing of game roots with a degree of parallelism of N.");
 							Console.WriteLine("  --parallel:level:N  Enables parallel processing of levels within game roots with a degree of parallelism of N.");
+							Console.WriteLine("  --quiet             Disables some spammy logs, which may be desired for performance.");
 							return;
 						case "level":
 							generateLevelReports = true;
@@ -68,6 +69,9 @@ namespace ScriptAnalyzer
 							break;
 						case "memoize":
 							Report.DisableMemoization = false;
+							break;
+						case "quiet":
+							Report.EnableSpamLogs = false;
 							break;
 						default:
 							Console.WriteLine($"Unknown option: {arg}");
@@ -115,7 +119,8 @@ namespace ScriptAnalyzer
 			});
 				//select Report.GenerateGameReport(gameRoot);
 
-			Report.GenerateReport(gameRoots);
+			if (generateEverything)
+				Report.GenerateReport(gameRoots);
 
 			//GC.Collect();
 

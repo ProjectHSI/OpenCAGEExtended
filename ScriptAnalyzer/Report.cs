@@ -78,6 +78,7 @@ namespace ScriptAnalyzer
 		public static ISet<string> LevelFilter { get; internal set; } = new HashSet<string>();
 		public static int GameRootParallelism { get; set; } = 1;
 		public static int LevelParallelism { get; set; } = 1;
+		public static bool EnableSpamLogs { get; internal set; } = true;
 
 		private static XElement GetGameReport(GameRootContext gameRootContext, string gameRoot)
 		{

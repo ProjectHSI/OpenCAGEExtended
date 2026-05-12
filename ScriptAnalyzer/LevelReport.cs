@@ -53,7 +53,8 @@ namespace ScriptAnalyzer
 		{
 			//CATHODE.Scripting.EntityVariant.
 
-			Console.WriteLine($"Processing composite {entry.name} ({entry.shortGUID.ToByteString()})");
+			if (Report.EnableSpamLogs)
+				Console.WriteLine($"Processing composite {entry.name} ({entry.shortGUID.ToByteString()})");
 
 			return new XElement("Composite",
 				new XAttribute("Name", entry.name),
@@ -131,11 +132,15 @@ namespace ScriptAnalyzer
 			Console.WriteLine($"Processing level {levelPath}...");
 
 #pragma warning disable CS8604 // Possible null reference argument.
-			return new XElement("LevelReport",
+			XElement levelReportElement = new("LevelReport",
 				new XAttribute("LevelName", Path.GetFileNameWithoutExtension(levelPath)),
 				GetLevelScriptingReport(new LevelContext(gameRootContext, levelPath))
 			);
-#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
+
+			Console.WriteLine($"Processed level {levelPath}...");
+
+			return levelReportElement;
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace ScriptAnalyzer
 {
 	internal class LevelContext
 	{
-		public readonly GameRootContext gameRootContext;
+		/*public readonly GameRootContext gameRootContext;
 
 		public readonly Task<Textures> TexturesTask;
 		public readonly Task<Shaders> ShadersTask;
@@ -23,9 +23,11 @@ namespace ScriptAnalyzer
 		public readonly Task<MaterialMappings> MaterialMappingsTask;
 		public readonly Task<CollisionMaps> CollisionMapsTask;
 
-		public readonly Task<EnvironmentAnimations> EnvironmentAnimationsTask;
+		public readonly Task<EnvironmentAnimations> EnvironmentAnimationsTask;*/
 
 		public readonly Task<CATHODE.Commands> CommandsTask;
+
+		private static Mutex commandsLoadingMutex = new Mutex();
 
 		public LevelContext(GameRootContext gameRootContext, string levelPath)
 		{
@@ -51,24 +53,33 @@ namespace ScriptAnalyzer
 			// And finally...
 			CommandsTask = Task.Run(async () =>
 			{
+				// Prevents concurrent modifications of the ShortGUID cache internal to CATHODELib, corrupting it
+				commandsLoadingMutex.WaitOne();
+
 				bool is64Bit = Path.Exists(Path.Combine(levelPath, "WORLD/COMMANDS.BIN"));
 
 				Materials materials = new("nul", new Textures("nul"), new Textures("nul"), new Shaders("nul"));
 
+				Commands commands;
+
 				if (!is64Bit)
 				{
-					return new CATHODE.Commands(Path.Combine(levelPath, "WORLD/COMMANDS.PAK"),
+					commands = new(Path.Combine(levelPath, "WORLD/COMMANDS.PAK"),
 						new EnvironmentAnimations("nul", new AnimationStrings("nul")),
 						new CollisionMaps("nul", materials, new MaterialMappings("nul")),
 						new RenderableElements("nul", new Models("nul", materials, new Collisions("nul"), new MorphTargets("nul")), materials));
 				}
 				else
 				{					
-					return new CATHODE.Commands(Path.Combine(levelPath, "WORLD/COMMANDS.BIN"),
+					commands = new CATHODE.Commands(Path.Combine(levelPath, "WORLD/COMMANDS.BIN"),
 						new EnvironmentAnimations("nul", new AnimationStrings("nul")),
 						new CollisionMaps("nul", materials, new MaterialMappings("nul")),
 						new RenderableElements("nul", new Models("nul", materials, new Collisions("nul"), new MorphTargets("nul")), materials));
 				}
+
+				commandsLoadingMutex.ReleaseMutex();
+
+				return commands;
 			});
 		}
 
